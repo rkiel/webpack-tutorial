@@ -172,16 +172,63 @@ You should see `dist/hello.js`. But I also see `dist/bundle.js`. We need to purg
     git add .
     git commit -m "named bundle entry point"
 
+## Let's some more files
+
+`src/utils/strings.js`
+
+```javascript
+export function magical(value) {
+  return value.toUpperCase();
+}
+```
+
+`src/hello.js`
+
+```javascript
+export function generate(name) {
+  return `hello ${name}`;
+}
+```
+
+`src/main.js`
+
+```javascript
+import * as hello from './hello';
+import * as strings from './utils/strings';
+
+const msg = hello.generate('bob');
+
+console.log(msg);
+console.log(strings.magical(msg));
+```
+
+## Now we need to change our entry point
+
+```javascript
+entry: {
+  hello: './src/main.js'
+},
+```
+
+## Run the build
+
+    npm run build
+    ls -l dist
+
 ## Let's add some lodash
 
     npm install --save lodash
 
 ## Let's use a lodash function
 
+`src/utils/strings.js`
+
 ```javascript
 import _ from 'lodash';
 
-console.log(_.toUpper('hello world'));
+export function magical(value) {
+  return _.toUpper(value);
+}
 ```
 
 ## Run the build

@@ -225,3 +225,61 @@ Horrible documentation for Webpack 4.
   </body>
 </html>
 ```
+
+## Let's pull in some content from the web using Axios
+
+    npm install --save axios
+
+## Update our js
+
+```javascript
+import _ from 'lodash';
+import axios from 'axios';
+
+console.log(_.toUpper('hello world'));
+
+async function loadUrl(url) {
+  try {
+    return await axios.get(url);
+  } catch (e) {
+    return e.message;
+  }
+}
+
+async function main() {
+  const url = 'http://goole.com';
+
+  const content = await loadUrl(url);
+  console.log('Content is ' + content);
+}
+
+main();
+```
+
+## Run the build
+
+    npm run build
+    cat dist/hello.js
+
+## Install babel
+
+    npm install --save-dev babel-core babel-loader babel-preset-env babel-polyfill
+
+## Create .babelrc
+
+```json
+{
+  "presets": [["env", { "modules": false }]]
+}
+```
+
+## Add this to top of `hello.js`
+
+```javascript
+import 'babel-polyfill';
+```
+
+## Run the build
+
+    npm run build
+    cat dist/hello.js

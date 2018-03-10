@@ -31,7 +31,7 @@ This tutorial is based on the [Webpack Getting Started](https://webpack.js.org/g
 ## Create a Hello World script file `src/hello.js`
 
 ```javascript
-console.log('Hello World');
+console.log('hello world');
 ```
 
 ## Create an HTML file `index.html`
@@ -153,7 +153,75 @@ You should see `dist/hello.js`. But I also see `dist/bundle.js`. We need to purg
 }
 ```
 
+## We have to update HTML file `index.html`
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>Hello World</title>
+  </head>
+  <body>
+    <script src="./dist/hello.js"></script>
+  </body>
+</html>
+```
+
 ## Commit again
 
     git add .
     git commit -m "named bundle entry point"
+
+## Let's add some lodash
+
+    npm install --save lodash
+
+## Let's use a lodash function
+
+```javascript
+import _ from 'lodash';
+
+console.log(_.toUpper('hello world'));
+```
+
+## Run the build
+
+    npm run build
+
+## Look at `dist/hello.js`
+
+Messy. All of lodash is there.
+
+## Use an optimization to split code
+
+Horrible documentation for Webpack 4.
+
+```javascript
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        default: false,
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          chunks: 'all'
+        }
+      }
+    }
+  }
+```
+
+## We have to update HTML file `index.html`
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>Hello World</title>
+  </head>
+  <body>
+    <script src="./dist/vendor.js"></script>
+    <script src="./dist/hello.js"></script>
+  </body>
+</html>
+```

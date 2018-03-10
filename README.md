@@ -19,22 +19,20 @@ This tutorial is based on the [Webpack Getting Started](https://webpack.js.org/g
     git add .
     git commit -m "Initial commit”
 
-## Install `webpack`
-
-    npm install --save-dev webpack
-    npm install --save-dev webpack-cli
-
-## Create a source code directory
+## Create a Hello World script file
 
     mkdir -p src
-
-## Create a Hello World script file `src/hello.js`
+    vim src/hello.js
 
 ```javascript
 console.log('hello world');
 ```
 
-## Create an HTML file `index.html`
+## Create an HTML file
+
+    vim index.html
+
+Assume that we want to load our JavaScript from a `dist` directory.
 
 ```html
 <!doctype html>
@@ -50,13 +48,21 @@ console.log('hello world');
 
 ## Open `file:///webpack-tutorial/index.html`
 
+Obviously this fails because `dist/bundle.js` does not exist.
+
 ```
 index.html:7 GET file:///webpack-tutorial/dist/bundle.js net::ERR_FILE_NOT_FOUND
 ```
 
-## Create `webpack.config.js`
+Let's use `webpack` to create it.
 
-    touch webpack.config.js
+## Install `webpack`
+
+    npm install --save-dev webpack webpack-cli
+
+## Create the default `webpack` configuration file
+
+    vim webpack.config.js
 
 ## Start with an empty shell
 
@@ -64,7 +70,7 @@ index.html:7 GET file:///webpack-tutorial/dist/bundle.js net::ERR_FILE_NOT_FOUND
 module.exports = {};
 ```
 
-## Add an entry point for source code
+## Add an entry point for the first file of our source code
 
 Entry points can be relative path.
 
@@ -90,7 +96,9 @@ module.exports = {
 };
 ```
 
-## Add scripts to package.json
+## Add `webpack` as the default npm build script
+
+    vim package.json
 
 ```json
 {
@@ -103,10 +111,8 @@ module.exports = {
 ## Run build
 
     npm run build
-
-## Look in `dist`
-
     ls -l dist
+    cat dist/bundle.js
 
 You should see `dist/bundle.js`
 
@@ -116,13 +122,15 @@ You should see `dist/bundle.js`
     git add .
     git commit -m "A basic config"
 
-## Now to bundles
+## Now deeper with bundles
 
 From the Webpack documentation:
 
 > At its core, webpack is a static module bundler for modern JavaScript applications. When webpack processes your application, it recursively builds a dependency graph that includes every module your application needs, then packages all of those modules into one or more bundles.
 
-## Change `webpack.config.js`
+## Make the webpack config more generic
+
+    vim webpack.config.js
 
 Replace the entry string with an object. Give the bundle the name `hello`.
 
@@ -132,7 +140,7 @@ entry: {
 }
 ```
 
-Replace the hard coded filename `bundle` with a placeholder for the bundle name used in entry.
+Replace the hard coded filename `bundle.js` with a placeholder for the bundle name used in entry.
 
 ```javascript
 output: {
@@ -146,9 +154,15 @@ output: {
     npm run build
     ls -l dist
 
-You should see `dist/hello.js`. But I also see `dist/bundle.js`. We need to purge `dist` before each build.
+You should see `dist/hello.js`.
 
-### Update package.json
+But I also see `dist/bundle.js`. We need to purge `dist` before each build.
+
+### Update our default build
+
+    vim package.json
+
+Purge `dist` before running Webpack
 
 ```json
 "scripts": {
@@ -156,7 +170,14 @@ You should see `dist/hello.js`. But I also see `dist/bundle.js`. We need to purg
 }
 ```
 
-## We have to update HTML file `index.html`
+## Build again
+
+    npm run build
+    ls -l dist
+
+## We have to update the HTML file
+
+    vim index.html
 
 ```html
 <!doctype html>
@@ -177,7 +198,8 @@ You should see `dist/hello.js`. But I also see `dist/bundle.js`. We need to purg
 
 ## Nobody uses just one file. Let's add more.
 
-`src/utils/strings.js`
+    mkdir -p src/utils
+    vim src/utils/strings.js
 
 ```javascript
 export function magical(value) {
@@ -185,7 +207,7 @@ export function magical(value) {
 }
 ```
 
-`src/hello.js`
+    vim src/hello.js
 
 ```javascript
 export function generate(name) {
@@ -193,7 +215,7 @@ export function generate(name) {
 }
 ```
 
-`src/main.js`
+    vim src/main.js
 
 ```javascript
 import * as hello from './hello';
@@ -207,6 +229,8 @@ console.log(strings.magical(msg));
 
 ## Now we need to change our entry point
 
+    vim webpack.config.js
+
 ```javascript
 entry: {
   hello: './src/main.js'
@@ -218,13 +242,13 @@ entry: {
     npm run build
     ls -l dist
 
-## Let's add some lodash
+## Nobody writes all their own code. Let's add a third-party library.
 
     npm install --save lodash
 
 ## Let's use a lodash function
 
-`src/utils/strings.js`
+    vim src/utils/strings.js
 
 ```javascript
 import _ from 'lodash';
@@ -237,14 +261,15 @@ export function magical(value) {
 ## Run the build
 
     npm run build
+    cat dist/hello.js
 
-## Look at `dist/hello.js`
-
-Messy. All of lodash is there.
+Messy. All that lodash code is there.
 
 ## Use an optimization to split code
 
 Horrible documentation for Webpack 4.
+
+Split code into two bundles. Our code and external libraries.
 
 ```javascript
   optimization: {
@@ -261,7 +286,11 @@ Horrible documentation for Webpack 4.
   }
 ```
 
-## We have to update HTML file `index.html`
+## We have to update HTML file
+
+    vim  index.html
+
+Include the new `vendor` bundle.
 
 ```html
 <!doctype html>
@@ -276,11 +305,15 @@ Horrible documentation for Webpack 4.
 </html>
 ```
 
-## Let's pull in some content from the web using Axios
+## Nobody sits quietly. Let's pull in some content from the web using Axios
 
     npm install --save axios
 
-## Create a web util `src/utils/web.js`
+## Create a web util
+
+    vim  src/utils/web.js
+
+And let's use the fancy new ES2017 async/await form of Promises.
 
 ```javascript
 import axios from 'axios';
@@ -299,7 +332,9 @@ export async function get(url) {
 }
 ```
 
-## Update our `src/main.js`
+## Use our new get function
+
+    vim src/main.js
 
 ```javascript
 import * as hello from './hello';
@@ -317,13 +352,18 @@ web.get('http://goole.com');
 ## Run the build
 
     npm run build
+
+## Why does this work?
+
     cat dist/hello.js
 
-## Install babel
+## Let's use universal ES5 JavaScript. Install babel
 
     npm install --save-dev babel-core babel-loader babel-preset-env babel-polyfill
 
-## Create .babelrc
+## Create a babel configuration file
+
+    vim .babelrc
 
 ```json
 {
@@ -331,7 +371,9 @@ web.get('http://goole.com');
 }
 ```
 
-## Add this to top of `main.js`
+## Babel needs something loaded at program start
+
+    vim main.js
 
 ```javascript
 import 'babel-polyfill';

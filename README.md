@@ -277,13 +277,10 @@ Horrible documentation for Webpack 4.
 
     npm install --save axios
 
-## Update our js
+## Create a web util `src/utils/web.js`
 
 ```javascript
-import _ from 'lodash';
 import axios from 'axios';
-
-console.log(_.toUpper('hello world'));
 
 async function loadUrl(url) {
   try {
@@ -293,14 +290,25 @@ async function loadUrl(url) {
   }
 }
 
-async function main() {
-  const url = 'http://goole.com';
-
+export async function get(url) {
   const content = await loadUrl(url);
   console.log('Content is ' + content);
 }
+```
 
-main();
+## Update our `src/main.js`
+
+```javascript
+import * as hello from './hello';
+import * as strings from './utils/strings';
+import * as web from './utils/web';
+
+const msg = hello.generate('bob');
+
+console.log(msg);
+console.log(strings.magical(msg));
+
+web.get('http://goole.com');
 ```
 
 ## Run the build
@@ -320,7 +328,7 @@ main();
 }
 ```
 
-## Add this to top of `hello.js`
+## Add this to top of `main.js`
 
 ```javascript
 import 'babel-polyfill';

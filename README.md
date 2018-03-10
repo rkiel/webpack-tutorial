@@ -100,9 +100,9 @@ module.exports = {
 }
 ```
 
-## Run webpack
+## Run build
 
-    npm run webpack
+    npm run build
 
 ## Look in `dist`
 
@@ -141,7 +141,7 @@ output: {
 
 ## Build again
 
-    npm run webpack
+    npm run build
 
 You should see `dist/hello.js`. But I also see `dist/bundle.js`. We need to purge `dist` before each build.
 

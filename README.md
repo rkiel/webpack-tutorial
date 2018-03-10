@@ -106,6 +106,8 @@ module.exports = {
 
 ## Look in `dist`
 
+    ls -l dist
+
 You should see `dist/bundle.js`
 
 ## Commit your changes
@@ -142,6 +144,7 @@ output: {
 ## Build again
 
     npm run build
+    ls -l dist
 
 You should see `dist/hello.js`. But I also see `dist/bundle.js`. We need to purge `dist` before each build.
 
@@ -172,7 +175,7 @@ You should see `dist/hello.js`. But I also see `dist/bundle.js`. We need to purg
     git add .
     git commit -m "named bundle entry point"
 
-## Let's some more files
+## Nobody uses just one file. Let's add more.
 
 `src/utils/strings.js`
 
@@ -324,7 +327,7 @@ web.get('http://goole.com');
 
 ```json
 {
-  "presets": [["env", { "modules": false }]]
+  "presets": ["env"]
 }
 ```
 

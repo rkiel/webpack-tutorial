@@ -54,9 +54,12 @@ Obviously this fails because `dist/bundle.js` does not exist.
 index.html:7 GET file:///webpack-tutorial/dist/bundle.js net::ERR_FILE_NOT_FOUND
 ```
 
-Let's use `webpack` to create it.
+I could manually create `dist/bundle.js` and it would work.
 
-## Install `webpack`
+    mkdir -p dist
+    cp src/hello.js dist/bundle.js
+
+## Nobody does this manually. Let's use `webpack`.
 
     npm install --save-dev webpack webpack-cli
 
